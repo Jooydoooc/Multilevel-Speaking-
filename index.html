@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speaking Practice App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .welcome-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 50px 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .app-logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .app-logo h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .app-logo p {
+            color: #7f8c8d;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e8eeff;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8faff;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::after {
+            left: 100%;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .sets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .set-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .set-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .set-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+
+        .set-card.inactive {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .set-card.inactive:hover {
+            transform: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border-color: transparent;
+        }
+
+        .set-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .set-card p {
+            color: #7f8c8d;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .set-card .status {
+            display: inline-block;
+            padding: 6px 16px;
+            background: #e8f5e8;
+            color: #27ae60;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .set-card.inactive .status {
+            background: #f8f8f8;
+            color: #95a5a6;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            background: white;
+            padding: 25px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-info .name {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .user-info .group {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .set-details {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .info-bar {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            font-weight: 600;
+            color: #555;
+            border-left: 5px solid #667eea;
+        }
+
+        .part-section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s;
+        }
+
+        .part-section:hover {
+            transform: translateX(5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .part-section h3 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .question-item {
+            padding: 18px;
+            background: white;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            color: #555;
+            line-height: 1.6;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .question-item:hover {
+            border-left-color: #667eea;
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .fullscreen-test {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 40px;
+        }
+
+        .test-timer {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            font-size: 48px;
+            font-weight: bold;
+            background: rgba(255,255,255,0.1);
+            padding: 20px 40px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .prep-timer {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            font-size: 36px;
+            font-weight: bold;
+            background: rgba(255,165,0,0.9);
+            padding: 15px 30px;
+            border-radius: 15px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .test-progress {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            font-size: 24px;
+            background: rgba(255,255,255,0.1);
+            padding: 15px 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .test-question {
+            font-size: 28px;
+            text-align: center;
+            max-width: 900px;
+            line-height: 1.6;
+            margin-bottom: 60px;
+        }
+
+        .voice-visualizer {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            justify-content: center;
+            height: 100px;
+            margin-top: 40px;
+            position: relative;
+        }
+
+        .voice-bar {
+            width: 6px;
+            background: white;
+            border-radius: 3px;
+            transition: height 0.1s;
+        }
+
+        .phase-indicator {
+            position: absolute;
+            bottom: 30px;
+            font-size: 24px;
+            padding: 15px 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .notes-area {
+            width: 80%;
+            max-width: 600px;
+            height: 150px;
+            padding: 20px;
+            font-size: 18px;
+            border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            resize: none;
+            margin-top: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .notes-area::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .notes-area:focus {
+            outline: none;
+            border-color: white;
+            background: rgba(255,255,255,0.15);
+        }
+
+        .completion-screen {
+            text-align: center;
+            background: white;
+            padding: 60px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            max-width: 600px;
+            margin: 50px auto;
+        }
+
+        .completion-screen h1 {
+            color: #27ae60;
+            margin-bottom: 20px;
+            font-size: 36px;
+        }
+
+        .completion-screen p {
+            color: #555;
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .back-btn {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+
+        .cue-card {
+            background: #fff3cd;
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 5px solid #ffc107;
+            margin-bottom: 20px;
+        }
+
+        .for-against {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .for-section, .against-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .for-section:hover, .against-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .for-section {
+            border-left: 5px solid #27ae60;
+        }
+
+        .against-section {
+            border-left: 5px solid #e74c3c;
+        }
+
+        .for-section h4 {
+            color: #27ae60;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .against-section h4 {
+            color: #e74c3c;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .for-section ul, .against-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .for-section li, .against-section li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .for-section li:last-child, .against-section li:last-child {
+            border-bottom: none;
+        }
+
+        .practice-image {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin: 20px 0;
+            transition: all 0.3s;
+        }
+
+        .practice-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        @media (max-width: 768px) {
+            .for-against {
+                grid-template-columns: 1fr;
+            }
+            
+            .test-question {
+                font-size: 22px;
+            }
+            
+            .test-timer, .prep-timer {
+                font-size: 24px;
+                padding: 10px 20px;
+            }
+            
+            .welcome-box {
+                padding: 30px 20px;
+            }
+            
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .user-info {
+                text-align: center;
+            }
+        }
+
+        .error-message {
+            background: #ffeaa7;
+            color: #e17055;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            border-left: 4px solid #e17055;
+            display: none;
+        }
+
+        .mock-test-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .mock-test-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(245, 87, 108, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script>
+        // Modern speaking app with fixes
+        const app = document.getElementById('app');
+        
+        let state = {
+            currentPage: 'welcome',
+            studentInfo: {
+                firstName: '',
+                surname: '',
+                group: '',
+                password: '',
+                date: new Date().toLocaleDateString('en-GB'),
+                time: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+            },
+            selectedSet: null,
+            isInMockTest: false,
+            currentPart: null,
+            currentQuestion: 0,
+            timer: 0,
+            prepTimer: 0,
+            phase: 'prepare',
+            isRecording: false,
+            audioBlob: null,
+            notes: '',
+            mediaRecorder: null,
+            audioChunks: [],
+            audioContext: null,
+            analyser: null,
+            timerInterval: null,
+            stream: null
+        };
+
+        // Speaking sets data
+        const speakingSets = [
+            {
+                id: 1,
+                name: 'Speaking Set 1',
+                active: true,
+                part1_1: [
+                    'What kind of weather do you like most?',
+                    'Do you enjoy reading books?',
+                    'How often do you go shopping?'
+                ],
+                part1_2: {
+                    mainPhoto: 'https://i.ibb.co/JRNZFMRS/edited-no-text.jpg',
+                    questions: [
+                        'What do you see in these pictures?',
+                        'Why do some people prefer eating out?',
+                        'Which do you like more, home food or restaurant food?'
+                    ]
+                },
+                part2: {
+                    cue: 'Talk about a time when you lost something important.',
+                    prompts: [
+                        'What did you do to find it?',
+                        'Why do people sometimes lose their things?'
+                    ]
+                },
+                part3: {
+                    topic: 'Should children have mobile phones?',
+                    for: [
+                        'It helps parents contact them anytime',
+                        'Useful for learning and safety',
+                        'Makes children feel more independent'
+                    ],
+                    against: [
+                        'It can distract them from studying',
+                        'Some use phones too much for games',
+                        'Phones are expensive for parents'
+                    ]
+                }
+            },
+            {
+                id: 2,
+                name: 'Speaking Set 2',
+                active: false,
+                part1_1: ['Question 1', 'Question 2', 'Question 3'],
+                part1_2: {
+                    mainPhoto: '', 
+                    questions: ['Question 1', 'Question 2', 'Question 3']
+                },
+                part2: {
+                    cue: 'Sample cue card topic',
+                    prompts: ['Prompt 1', 'Prompt 2']
+                },
+                part3: {
+                    topic: 'Sample debate topic',
+                    for: ['Point 1', 'Point 2', 'Point 3'],
+                    against: ['Point 1', 'Point 2', 'Point 3']
+                }
+            },
+            {
+                id: 3,
+                name: 'Speaking Set 3',
+                active: false,
+                part1_1: ['Question 1', 'Question 2', 'Question 3'],
+                part1_2: {
+                    mainPhoto: '', 
+                    questions: ['Question 1', 'Question 2', 'Question 3']
+                },
+                part2: {
+                    cue: 'Sample cue card topic',
+                    prompts: ['Prompt 1', 'Prompt 2']
+                },
+                part3: {
+                    topic: 'Sample debate topic',
+                    for: ['Point 1', 'Point 2', 'Point 3'],
+                    against: ['Point 1', 'Point 2', 'Point 3']
+                }
+            }
+        ];
+
+        // Main render function
+        function render() {
+            if (state.currentPage === 'welcome') {
+                renderWelcomePage();
+            } else if (state.currentPage === 'main') {
+                renderMainPage();
+            } else if (state.currentPage === 'setDetails') {
+                renderSetDetails();
+            } else if (state.currentPage === 'mockTest') {
+                renderMockTest();
+            } else if (state.currentPage === 'completion') {
+                renderCompletion();
+            }
+        }
+
+        // Modern welcome page
+        function renderWelcomePage() {
+            app.innerHTML = `
+                <div class="container">
+                    <div class="welcome-box">
+                        <div class="app-logo">
+                            <h1>🎤 Speaking Pro</h1>
+                            <p>Practice your speaking skills with professional mock tests</p>
+                        </div>
+                        
+                        <div class="error-message" id="errorMessage"></div>
+                        
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" id="firstName" placeholder="Enter your first name" value="${state.studentInfo.firstName}">
+                        </div>
+                        <div class="form-group">
+                            <label>Surname</label>
+                            <input type="text" id="surname" placeholder="Enter your surname" value="${state.studentInfo.surname}">
+                        </div>
+                        <div class="form-group">
+                            <label>Group Name</label>
+                            <input type="text" id="group" placeholder="Enter your group" value="${state.studentInfo.group}">
+                        </div>
+                        <div class="form-group">
+                            <label>Access Code</label>
+                            <input type="password" id="password" placeholder="Enter your access code" value="${state.studentInfo.password}">
+                        </div>
+                        <button class="btn" onclick="handleWelcomeSubmit()">Start Practice Session</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Handle welcome form submission
+        function handleWelcomeSubmit() {
+            const firstName = document.getElementById('firstName').value.trim();
+            const surname = document.getElementById('surname').value.trim();
+            const group = document.getElementById('group').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Hide error message initially
+            if (errorMessage) errorMessage.style.display = 'none';
+
+            if (!firstName || !surname || !group) {
+                showError('Please fill in all fields (First Name, Surname, Group Name)');
+                return;
+            }
+
+            if (password !== 'versage_10') {
+                showError('Invalid access code. Please check and try again.');
+                return;
+            }
+
+            state.studentInfo.firstName = firstName;
+            state.studentInfo.surname = surname;
+            state.studentInfo.group = group;
+            state.currentPage = 'main';
+            render();
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            if (errorMessage) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+            } else {
+                alert(message);
+            }
+        }
+
+        // Main page with sets
+        function renderMainPage() {
+            app.innerHTML = `
+                <div class="main-container">
+                    <div class="header">
+                        <h1>Speaking Practice Sets</h1>
+                        <div class="user-info">
+                            <div class="name">${state.studentInfo.firstName} ${state.studentInfo.surname}</div>
+                            <div class="group">${state.studentInfo.group}</div>
+                            <button class="logout-btn" onclick="logout()">Logout</button>
+                        </div>
+                    </div>
+                    
+                    <div class="sets-grid">
+                        ${speakingSets.map(set => `
+                            <div class="set-card ${set.active ? '' : 'inactive'}" onclick="${set.active ? `selectSet(${set.id})` : 'return false'}">
+                                <h3>${set.name}</h3>
+                                <p>${set.active ? 'Complete speaking practice with all test sections' : 'Coming soon'}</p>
+                                <div class="status">${set.active ? 'Available' : 'Locked'}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="mock-test-btn" onclick="startMockTestWithFirstSet()">
+                        🎤 Start Mock Test with Speaking Set 1
+                    </div>
+                </div>
+            `;
+        }
+
+        // Start mock test with first available set
+        function startMockTestWithFirstSet() {
+            const activeSet = speakingSets.find(set => set.active);
+            if (activeSet) {
+                state.selectedSet = activeSet;
+                startMockTest();
+            } else {
+                showError('No active speaking sets available.');
+            }
+        }
+
+        // Logout function
+        function logout() {
+            state.currentPage = 'welcome';
+            state.studentInfo = {
+                firstName: '',
+                surname: '',
+                group: '',
+                password: '',
+                date: new Date().toLocaleDateString('en-GB'),
+                time: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+            };
+            render();
+        }
+
+        // Select a speaking set
+        function selectSet(setId) {
+            state.selectedSet = speakingSets.find(s => s.id === setId);
+            state.currentPage = 'setDetails';
+            render();
+        }
+
+        // Set details page
+        function renderSetDetails() {
+            const set = state.selectedSet;
+            app.innerHTML = `
+                <div class="main-container">
+                    <div class="header">
+                        <h1>${set.name}</h1>
+                        <div class="user-info">
+                            <div class="name">${state.studentInfo.firstName} ${state.studentInfo.surname}</div>
+                            <div class="group">${state.studentInfo.group}</div>
+                            <button class="logout-btn" onclick="backToMain()">Back to Sets</button>
+                        </div>
+                    </div>
+                    
+                    <div class="set-details">
+                        <div class="info-bar">
+                            📅 ${state.studentInfo.date} | ⏰ ${state.studentInfo.time} | 👤 ${state.studentInfo.firstName} ${state.studentInfo.surname} | 👥 ${state.studentInfo.group}
+                        </div>
+                        
+                        <div class="part-section">
+                            <h3>🎯 Part 1.1 - Introduction & Interview</h3>
+                            ${set.part1_1.map((q, i) => `
+                                <div class="question-item">
+                                    <strong>${i + 1}.</strong> ${q}
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="part-section">
+                            <h3>🖼️ Part 1.2 - Picture Description</h3>
+                            <div style="text-align: center; margin-bottom: 20px;">
+                                <img src="${set.part1_2.mainPhoto}" 
+                                     alt="Speaking practice visual" 
+                                     class="practice-image"
+                                     onerror="this.src='https://via.placeholder.com/600x400/667eea/ffffff?text=Practice+Image'">
+                            </div>
+                            <div class="question-item" style="text-align: center; font-weight: 600; font-size: 18px;">
+                                ${set.part1_2.questions[0]}
+                            </div>
+                            <div style="margin-top: 25px;">
+                                <strong>Follow-up Questions:</strong>
+                                ${set.part1_2.questions.slice(1).map((q, i) => `
+                                    <div class="question-item">${i + 2}. ${q}</div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="part-section">
+                            <h3>📝 Part 2 - Cue Card</h3>
+                            <div class="cue-card">
+                                <strong style="font-size: 20px;">${set.part2.cue}</strong>
+                                <ul style="margin-top: 20px; padding-left: 25px;">
+                                    ${set.part2.prompts.map(p => `<li style="margin: 12px 0; font-size: 16px;">${p}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="part-section">
+                            <h3>💬 Part 3 - Discussion</h3>
+                            <div class="question-item" style="font-weight: 600; font-size: 20px; margin-bottom: 25px; text-align: center;">
+                                ${set.part3.topic}
+                            </div>
+                            <div class="for-against">
+                                <div class="for-section">
+                                    <h4>✅ FOR</h4>
+                                    <ul>
+                                        ${set.part3.for.map(point => `<li>${point}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                <div class="against-section">
+                                    <h4>❌ AGAINST</h4>
+                                    <ul>
+                                        ${set.part3.against.map(point => `<li>${point}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="text-align: center; margin-top: 50px;">
+                            <button class="btn" onclick="startMockTest()" style="padding: 20px 40px; font-size: 20px;">
+                                🎤 Start Mock Test
+                            </button>
+                            <button class="back-btn" onclick="backToMain()" style="margin-left: 20px; padding: 18px 35px;">Back to Sets</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Back to main page
+        function backToMain() {
+            state.selectedSet = null;
+            state.currentPage = 'main';
+            render();
+        }
+
+        // Start mock test
+        async function startMockTest() {
+            try {
+                // Request microphone access
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true
+                    } 
+                });
+                state.stream = stream;
+                
+                // Setup media recorder
+                state.mediaRecorder = new MediaRecorder(stream);
+                state.audioChunks = [];
+                
+                state.mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        state.audioChunks.push(event.data);
+                    }
+                };
+                
+                state.mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(state.audioChunks, { type: 'audio/webm' });
+                    state.audioBlob = audioBlob;
+                };
+                
+                // Start recording
+                state.mediaRecorder.start(1000); // Collect data every second
+                state.isRecording = true;
+                
+                // Setup audio visualization
+                state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const source = state.audioContext.createMediaStreamSource(stream);
+                state.analyser = state.audioContext.createAnalyser();
+                state.analyser.fftSize = 256;
+                source.connect(state.analyser);
+                
+                // Start the test
+                state.currentPage = 'mockTest';
+                state.currentPart = 'part1_1';
+                state.currentQuestion = 0;
+                state.phase = 'prepare';
+                state.prepTimer = 5; // 5 seconds preparation
+                state.timer = 0;
+                
+                render();
+                startPartTimer();
+                animateVoice();
+                
+            } catch (error) {
+                showError('Microphone access is required for this test. Please allow microphone access and try again.');
+                console.error('Error accessing microphone:', error);
+            }
+        }
+
+        // Mock test screen
+        function renderMockTest() {
+            const set = state.selectedSet;
+            let questionText = '';
+            let progressText = '';
+
+            if (state.currentPart === 'part1_1') {
+                questionText = set.part1_1[state.currentQuestion];
+                progressText = `Part 1.1 - Question ${state.currentQuestion + 1}/${set.part1_1.length}`;
+            } else if (state.currentPart === 'part1_2') {
+                if (state.currentQuestion === 0) {
+                    questionText = `
+                        <div style="text-align: center;">
+                            <img src="${set.part1_2.mainPhoto}" 
+                                 alt="Practice picture" 
+                                 style="max-width: 500px; width: 90%; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                            <div style="font-size: 24px;">${set.part1_2.questions[0]}</div>
+                        </div>
+                    `;
+                    progressText = 'Part 1.2 - Picture Description';
+                } else {
+                    questionText = set.part1_2.questions[state.currentQuestion];
+                    progressText = `Part 1.2 - Follow-up ${state.currentQuestion}`;
+                }
+            } else if (state.currentPart === 'part2') {
+                questionText = `
+                    <div style="text-align: center;">
+                        <div style="font-size: 28px; font-weight: bold; margin-bottom: 30px; line-height: 1.4;">${set.part2.cue}</div>
+                        <div style="text-align: left; display: inline-block; font-size: 20px;">
+                            ${set.part2.prompts.map(p => `<div style="margin: 15px 0;">• ${p}</div>`).join('')}
+                        </div>
+                    </div>
+                `;
+                progressText = 'Part 2 - Cue Card';
+            } else if (state.currentPart === 'part3') {
+                questionText = `
+                    <div style="text-align: center; font-size: 28px; font-weight: bold; line-height: 1.4;">
+                        ${set.part3.topic}
+                    </div>
+                `;
+                progressText = 'Part 3 - Discussion';
+            }
+
+            app.innerHTML = `
+                <div class="fullscreen-test">
+                    <div class="test-progress">${progressText}</div>
+                    
+                    ${state.phase === 'prepare' ? 
+                        `<div class="prep-timer">⏱️ ${state.prepTimer}s</div>` : 
+                        `<div class="test-timer">${formatTime(state.timer)}</div>`
+                    }
+                    
+                    <div class="test-question">${questionText}</div>
+                    
+                    ${state.currentPart === 'part2' && state.phase === 'prepare' ? 
+                        `<textarea class="notes-area" placeholder="✏️ Write your notes here..." oninput="updateNotes(this.value)">${state.notes}</textarea>` : 
+                        ''
+                    }
+                    
+                    <div class="voice-visualizer" id="voiceVisualizer">
+                        ${Array.from({length: 25}, () => `<div class="voice-bar"></div>`).join('')}
+                    </div>
+                    
+                    <div class="phase-indicator">
+                        ${state.phase === 'prepare' ? '📝 Preparation Time' : '🎤 Speaking Time - Recording...'}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Update notes
+        function updateNotes(value) {
+            state.notes = value;
+        }
+
+        // Start timer for current part
+        function startPartTimer() {
+            clearInterval(state.timerInterval);
+            
+            state.timerInterval = setInterval(() => {
+                if (state.phase === 'prepare') {
+                    state.prepTimer--;
+                    
+                    if (state.prepTimer <= 0) {
+                        clearInterval(state.timerInterval);
+                        state.phase = 'speaking';
+                        state.timer = getTimeLimitForCurrentPart();
+                        render();
+                        startPartTimer();
+                    }
+                } else {
+                    state.timer--;
+                    
+                    if (state.timer <= 0) {
+                        clearInterval(state.timerInterval);
+                        moveToNextPart();
+                    }
+                }
+                
+                // Update timer display
+                updateTimerDisplay();
+                
+            }, 1000);
+        }
+
+        // Update timer display
+        function updateTimerDisplay() {
+            const timerEl = document.querySelector(state.phase === 'prepare' ? '.prep-timer' : '.test-timer');
+            if (timerEl) {
+                timerEl.textContent = state.phase === 'prepare' ? 
+                    `⏱️ ${state.prepTimer}s` : 
+                    formatTime(state.timer);
+            }
+        }
+
+        // Format time as MM:SS
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Get time limit for current part
+        function getTimeLimitForCurrentPart() {
+            if (state.currentPart === 'part1_1') return 30;
+            if (state.currentPart === 'part1_2') return state.currentQuestion === 0 ? 45 : 30;
+            if (state.currentPart === 'part2') return 120;
+            if (state.currentPart === 'part3') return 120;
+            return 30;
+        }
+
+        // Move to next part/question
+        function moveToNextPart() {
+            const set = state.selectedSet;
+            
+            if (state.currentPart === 'part1_1') {
+                state.currentQuestion++;
+                if (state.currentQuestion < set.part1_1.length) {
+                    // Next question in part1_1
+                    state.phase = 'prepare';
+                    state.prepTimer = 5;
+                    render();
+                    startPartTimer();
+                } else {
+                    // Move to part1_2
+                    state.currentPart = 'part1_2';
+                    state.currentQuestion = 0;
+                    state.phase = 'prepare';
+                    state.prepTimer = 10;
+                    render();
+                    startPartTimer();
+                }
+            } else if (state.currentPart === 'part1_2') {
+                state.currentQuestion++;
+                if (state.currentQuestion < set.part1_2.questions.length) {
+                    // Next question in part1_2
+                    state.phase = 'prepare';
+                    state.prepTimer = 5;
+                    render();
+                    startPartTimer();
+                } else {
+                    // Move to part2
+                    state.currentPart = 'part2';
+                    state.currentQuestion = 0;
+                    state.phase = 'prepare';
+                    state.prepTimer = 60;
+                    render();
+                    startPartTimer();
+                }
+            } else if (state.currentPart === 'part2') {
+                // Move to part3
+                state.currentPart = 'part3';
+                state.currentQuestion = 0;
+                state.phase = 'prepare';
+                state.prepTimer = 60;
+                render();
+                startPartTimer();
+            } else if (state.currentPart === 'part3') {
+                // Test completed
+                finishMockTest();
+            }
+        }
+
+        // Animate voice visualization
+        function animateVoice() {
+            if (!state.analyser || !state.isRecording) return;
+            
+            const bars = document.querySelectorAll('.voice-bar');
+            const bufferLength = state.analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            
+            function update() {
+                if (!state.isRecording || state.currentPage !== 'mockTest') return;
+                
+                state.analyser.getByteFrequencyData(dataArray);
+                
+                bars.forEach((bar, i) => {
+                    const value = dataArray[Math.floor(i * bufferLength / bars.length)];
+                    const height = Math.max(10, (value / 255) * 120);
+                    bar.style.height = `${height}px`;
+                    bar.style.background = `linear-gradient(to top, #fff, #${Math.floor(value).toString(16).padStart(2, '0')}ff${Math.floor(value).toString(16).padStart(2, '0')})`;
+                });
+                
+                requestAnimationFrame(update);
+            }
+            
+            update();
+        }
+
+        // Finish mock test
+        async function finishMockTest() {
+            // Stop recording
+            if (state.mediaRecorder && state.isRecording) {
+                state.mediaRecorder.stop();
+                state.isRecording = false;
+            }
+            
+            // Close audio context
+            if (state.audioContext) {
+                await state.audioContext.close();
+            }
+            
+            // Stop media tracks
+            if (state.stream) {
+                state.stream.getTracks().forEach(track => track.stop());
+            }
+            
+            // Send recording info to Telegram
+            await sendToTelegram();
+            
+            state.currentPage = 'completion';
+            render();
+        }
+
+        // Send recording info to Telegram
+        async function sendToTelegram() {
+            try {
+                const formData = new FormData();
+                formData.append('studentInfo', JSON.stringify(state.studentInfo));
+                formData.append('setName', state.selectedSet.name);
+                
+                const response = await fetch('/api/send-recording', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    console.log('Successfully sent recording info to Telegram');
+                } else {
+                    console.error('Failed to send to Telegram:', result.error);
+                }
+            } catch (error) {
+                console.error('Error sending to Telegram:', error);
+            }
+        }
+
+        // Completion screen
+        function renderCompletion() {
+            app.innerHTML = `
+                <div class="completion-screen">
+                    <h1>✅ Test Completed Successfully!</h1>
+                    <p>Great job! You've completed your speaking practice test.</p>
+                    <p>Your recording information has been sent to your teacher.</p>
+                    
+                    ${state.audioBlob ? `
+                        <button class="download-btn" onclick="downloadRecording()">
+                            📥 Download Recording
+                        </button>
+                    ` : `
+                        <p style="color: #e74c3c; margin: 20px 0; background: #ffeaa7; padding: 15px; border-radius: 10px;">
+                            Note: Recording not available. Please ensure microphone access was granted.
+                        </p>
+                    `}
+                    
+                    <div style="margin-top: 40px;">
+                        <button class="back-btn" onclick="backToMain()">🏠 Back to Main Menu</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Download recording
+        function downloadRecording() {
+            if (!state.audioBlob) {
+                showError('No recording available to download.');
+                return;
+            }
+            
+            const url = URL.createObjectURL(state.audioBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `speaking_test_${state.studentInfo.firstName}_${state.studentInfo.surname}_${new Date().getTime()}.webm`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Make functions available globally
+        window.handleWelcomeSubmit = handleWelcomeSubmit;
+        window.selectSet = selectSet;
+        window.backToMain = backToMain;
+        window.startMockTest = startMockTest;
+        window.startMockTestWithFirstSet = startMockTestWithFirstSet;
+        window.updateNotes = updateNotes;
+        window.downloadRecording = downloadRecording;
+        window.logout = logout;
+
+        // Initial render
+        render();
+    </script>
+</body>
+</html>
